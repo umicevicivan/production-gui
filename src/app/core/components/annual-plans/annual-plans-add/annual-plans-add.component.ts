@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
@@ -35,13 +35,6 @@ export class AnnualPlansAddComponent implements OnInit {
   today: any;
   minDate: Date;
   headElements = ['Quantity', 'Description', 'Product', 'Action'];
-
-  @HostListener('window:beforeunload', ['$event'])
-  unloadNotification($event: any) {
-    if (this.addForm.dirty) {
-      $event.returnValue = true;
-    }
-  }
 
   constructor(
     private alertify: AlertifyService, private planService: AnnualPlansService, private router: Router,

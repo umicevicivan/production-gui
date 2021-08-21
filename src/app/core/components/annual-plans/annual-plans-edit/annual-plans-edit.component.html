@@ -3,15 +3,14 @@
     <div class="col-sm-6">
       <form class="mt-4" [formGroup]="addForm">
         <h2 class="text-center">Annual Plan Info</h2>
-        <hr />
+        <hr/>
 
         <h5>Date of Issue</h5>
         <div class="form-group">
           <input
             class="form-control"
-            placeholder="{{ annualPlan.dateOfIssue }}"
+            placeholder="{{ annualPlan.dateOfIssue  | date }}"
             disabled
-            value="{{ annualPlan.dateOfIssue }}"
             formControlName="dateOfIssue"
           />
         </div>
@@ -25,7 +24,7 @@
                 addForm.get('expirationDate').touched
             }"
             class="form-control"
-            placeholder="{{ annualPlan.expirationDate }}"
+            placeholder="{{ annualPlan.expirationDate | date}}"
             formControlName="expirationDate"
             type="text"
             bsDatepicker
@@ -90,7 +89,7 @@
         <h5>Worker</h5>
         <select class="form-control" formControlName="worker">
           <option value="" disabled hidden>Please chose a Worker</option>
-          <option *ngFor="let worker of workers" [ngValue]="worker">
+          <option *ngFor="let worker of workers$|async" [ngValue]="worker">
             {{ worker.name }} {{ worker.surname }}
           </option>
         </select>
@@ -99,10 +98,10 @@
 
     <div class="col-sm-6">
       <form class="mt-4" [formGroup]="addItemForm">
-        <h2 class="text-center">Annual Plan Item Edit</h2>
-        <hr />
+        <h2 class="text-center">Add Annual Plan Item</h2>
+        <hr/>
         <div class="mt-5 mb-5"></div>
-        <div class="form-group">
+        <div class="form-group mb-3">
           <input
             [ngClass]="{
               'is-invalid':
@@ -133,7 +132,7 @@
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group mb-3">
           <input
             [ngClass]="{
               'is-invalid':
@@ -159,7 +158,7 @@
           <option value="" disabled selected hidden>
             Please chose a Product
           </option>
-          <option *ngFor="let product of products" [ngValue]="product">
+          <option *ngFor="let product of products$|async" [ngValue]="product">
             {{ product.name }} {{ product.professionalName }}
           </option>
         </select>
@@ -176,46 +175,45 @@
       </form>
     </div>
   </div>
-  <br />
+  <br/>
   <div class="table-striped">
     <table class="table text-center">
       <thead>
-        <tr>
-          <th *ngFor="let head of headElements" scope="col">{{ head }}</th>
-        </tr>
+      <tr>
+        <th *ngFor="let head of headElements" scope="col">{{ head }}</th>
+      </tr>
       </thead>
       <tbody>
-        <tr mdbTableCol *ngFor="let planItem of planItems">
-          <td>{{ planItem.id }}</td>
-          <td>{{ planItem.annualProductionPlanId }}</td>
-          <td>{{ planItem.quantity }}</td>
-          <td>{{ planItem.description }}</td>
-          <td>{{ planItem.product.name }}</td>
-          <td>
-            <button
-              type="button"
-              class="btn btn-danger"
-              (click)="deleteItem(planItem)"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
+      <tr *ngFor="let planItem of annualPlan.planItems">
+        <td>{{ planItem.id }}</td>
+        <td>{{ annualPlan.id}}</td>
+        <td>{{ planItem.quantity }}</td>
+        <td>{{ planItem.description }}</td>
+        <td>{{ planItem.product.name }}</td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="deleteItem(planItem)"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
       </tbody>
     </table>
   </div>
   <div class="mt-4 form-group text-center pt-3 mt-4">
     <button
-      class="btn btn-success btn-block mb-2"
+      class="btn btn-success btn-block mx-3"
       [disabled]="!addForm.valid"
       type="submit"
-      (click)="editAnnualPlan()"
-    >
-      Add Annual Production Plan
+      (click)="editAnnualPlan()">
+      Edit Annual Production Plan
     </button>
 
     <button
-      class="btn btn-outline-dark btn-block"
+      class="btn btn-outline-dark"
       (click)="cancel()"
       type="button"
     >
@@ -223,7 +221,7 @@
     </button>
   </div>
 
-  <!--   
+  <!--
   <p>Form value: {{ addForm.value | json }}</p>
   <p>Form status: {{ addForm.status | json }}</p> -->
 </div>

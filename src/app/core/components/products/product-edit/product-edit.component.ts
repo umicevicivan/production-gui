@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Product } from 'src/app/core/api/products/product';
@@ -7,7 +7,7 @@ import { UnitsOfMeasureService } from '../../../api/units-of-measure/units-of-me
 import { ProductsService } from '../../../api/products/products.service';
 import { select, Store } from '@ngrx/store';
 import { selectUnitsOfMeasure } from '../../../../ngrx/selectors/unitOfMeasure.selector';
-import { addProduct, editProduct } from '../../../../ngrx/actions/product.actions';
+import { editProduct } from '../../../../ngrx/actions/product.actions';
 
 @Component({
   selector: 'app-product-edit',
@@ -20,14 +20,6 @@ export class ProductEditComponent implements OnInit {
   addForm: FormGroup;
   unitsOfMeasure$ = this.store.pipe(select(selectUnitsOfMeasure));
   idToSend: number;
-
-
-  @HostListener('window:beforeunload', ['$event'])
-  unloadNotification($event: any) {
-    if (this.addForm.dirty) {
-      $event.returnValue = true;
-    }
-  }
 
   constructor(private route: ActivatedRoute, private alertify: AlertifyService, private productService: ProductsService,
               private router: Router, private fb: FormBuilder, private unitService: UnitsOfMeasureService,

@@ -3,7 +3,7 @@
     <div class="col-sm-6">
       <form class="mt-4" [formGroup]="addForm">
         <h2 class="text-center">Annual Production Plan Info</h2>
-        <hr />
+        <hr/>
 
         <h5>Date of Issue</h5>
         <div class="form-group mb-3">
@@ -29,7 +29,7 @@
             type="text"
             bsDatepicker
             [bsConfig]="bsConfig"
-            [minDate] = "minDate"
+            [minDate]="minDate"
           />
           <div
             class="invalid-feedback"
@@ -96,8 +96,8 @@
 
     <div class="col-sm-6">
       <form class="mt-4" [formGroup]="addItemForm" (ngSubmit)="addItem()">
-        <h2 class="text-center">Annual Production Plan Item Info</h2>
-        <hr />
+        <h2 class="text-center">Add Plan Item</h2>
+        <hr/>
         <div class="mt-5 mb-5"></div>
         <div class="form-group mb-3">
           <input
@@ -120,14 +120,14 @@
             Quantity is required
           </div>
           <div
-          class="invalid-feedback"
-          *ngIf="
+            class="invalid-feedback"
+            *ngIf="
             addItemForm.get('quantity').touched &&
             addItemForm.get('quantity').hasError('pattern')
           "
-        >
-          Quantity must be a number and can't start with 0
-        </div>
+          >
+            Quantity must be a number and can't start with 0
+          </div>
         </div>
 
         <div class="form-group mb-3">
@@ -165,7 +165,7 @@
             [disabled]="!addItemForm.valid"
             type="submit"
           >
-            Add
+            Add Plan Item
           </button>
         </div>
       </form>
@@ -175,25 +175,25 @@
   <div *ngIf="planItems.length > 0" class=" table-striped">
     <table class="table text-center">
       <thead>
-        <tr>
-          <th *ngFor="let head of headElements" scope="col">{{ head }}</th>
-        </tr>
+      <tr>
+        <th *ngFor="let head of headElements" scope="col">{{ head }}</th>
+      </tr>
       </thead>
       <tbody>
-        <tr mdbTableCol *ngFor="let planItem of planItems">
-          <td>{{ planItem.quantity }}</td>
-          <td>{{ planItem.description }}</td>
-          <td>{{ planItem.product.name }}</td>
-          <td>
-            <button
-              type="button"
-              class="btn btn-danger"
-              (click)="deleteItem(planItem)"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
+      <tr *ngFor="let planItem of planItems">
+        <td>{{ planItem.quantity }}</td>
+        <td>{{ planItem.description }}</td>
+        <td>{{ planItem.product.name }}</td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="deleteItem(planItem)"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
       </tbody>
     </table>
   </div>

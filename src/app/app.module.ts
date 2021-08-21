@@ -14,7 +14,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { ProductsService } from './core/api/products/products.service';
-import { PreventUnsavedChanges } from './shared/util/guards/prevent-unsaved-changes.guard';
 import { ErrorInterceptorProvider } from './shared/util/interceptors/error.interceptior';
 import { ProductEditResolver } from './core/resolvers/product-edit.resolver';
 import { AnnualPlansComponent } from './core/components/annual-plans/annual-plans.component';
@@ -76,7 +75,6 @@ export function tokenGetter() {
   providers: [
     AlertifyService,
     ProductsService,
-    PreventUnsavedChanges,
     ErrorInterceptorProvider,
     ProductEditResolver,
     AnnualPlanEditResolver,

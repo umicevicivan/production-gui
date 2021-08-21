@@ -1,7 +1,6 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UnitOfMeasure } from 'src/app/core/api/units-of-measure/unit-of-measure';
 import { ProductsService } from '../../../api/products/products.service';
 import { AlertifyService } from '../../../../shared/util/services/alertify.service';
 import { UnitsOfMeasureService } from '../../../api/units-of-measure/units-of-measure.service';
@@ -19,12 +18,6 @@ export class ProductsAddComponent implements OnInit {
   addForm: FormGroup;
   unitsOfMeasure$ = this.store.pipe(select(selectUnitsOfMeasure));
 
-  @HostListener('window:beforeunload', ['$event'])
-  unloadNotification($event: any) {
-    if (this.addForm.dirty) {
-      $event.returnValue = true;
-    }
-  }
 
   constructor(private alertify: AlertifyService, private productService: ProductsService,
               private router: Router, private unitService: UnitsOfMeasureService, private fb: FormBuilder,

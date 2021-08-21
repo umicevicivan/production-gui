@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,6 +9,11 @@ import { AlertifyService } from '../../../../shared/util/services/alertify.servi
 import { AnnualPlansService } from '../../../api/annual-plan/annual-plans.service';
 import { ProductsService } from '../../../api/products/products.service';
 import { WorkersService } from '../../../api/workers/workers.service';
+import { select, Store } from '@ngrx/store';
+import { selectProducts } from '../../../../ngrx/selectors/product.selector';
+import { selectWorkers } from '../../../../ngrx/selectors/worker.selector';
+import { PlanItemService } from '../../../api/plan-item/plan-item.service';
+import { editAnnualPlan } from '../../../../ngrx/actions/annualPlan.actions';
 
 @Component({
   selector: 'app-annual-plans-edit',
@@ -19,50 +24,33 @@ export class AnnualPlansEditComponent implements OnInit {
 
   addForm: FormGroup;
   addItemForm: FormGroup;
-  products: Product[];
-  workers: Worker[];
+
+  products$ = this.store.pipe(select(selectProducts));
+  workers$ = this.store.pipe(select(selectWorkers));
+
+
   annualPlan: AnnualPlan;
-  planItems: Array<PlanItem> = [];
-  planItem: PlanItem;
+
   bsConfig: Partial<BsDatepickerConfig>;
   today: any;
   minDate: Date;
-  editedItem: PlanItem;
-  idToSend: number;
-  editedAnnualPlan = new AnnualPlan();
+
   headElements = ['Id', 'Annual Production Plan Id', 'Quantity', 'Description', 'Product', 'Action'];
 
-
-  @HostListener('window:beforeunload', ['$event'])
-  unloadNotification($event: any) {
-    if (this.addForm.dirty) {
-      $event.returnValue = true;
-    }
-  }
-
   constructor(
-    private alertify: AlertifyService,
-    private planService: AnnualPlansService,
-    private router: Router,
-    private productService: ProductsService,
-    private fb: FormBuilder,
-    private workerService: WorkersService,
-    private annualPlanService: AnnualPlansService,
-    private route: ActivatedRoute
-  ) {
+    private alertify: AlertifyService, private planService: AnnualPlansService, private router: Router,
+    private productService: ProductsService, private fb: FormBuilder, private workerService: WorkersService,
+    private annualPlanService: AnnualPlansService, private route: ActivatedRoute, private store: Store,
+    private planItemService: PlanItemService) {
+    this.createAddForm();
+    this.createAddItemForm();
   }
 
   ngOnInit() {
     this.route.data.subscribe(data => {
       this.annualPlan = data.annualPlan;
     });
-    this.createAddForm();
-    this.createAddItemForm();
-    this.loadWorkers();
-    this.loadProducts();
     this.createCurrentDate();
-    this.planItems = this.annualPlan.planItems;
-    this.idToSend = this.annualPlan.id;
     this.minDate = new Date();
   }
 
@@ -93,49 +81,33 @@ export class AnnualPlansEditComponent implements OnInit {
     });
   }
 
-  loadProducts() {
-    this.productService.getProducts().subscribe(
-      (aaa: Product[]) => {
-        this.products = aaa;
-      },
-      (error) => {
-        this.alertify.error(error);
-      }
-    );
-  }
-
-  loadWorkers() {
-    this.workerService.getWorkers().subscribe(
-      (aaa: Worker[]) => {
-        this.workers = aaa;
-      },
-      (error) => {
-        this.alertify.error(error);
-      }
-    );
-  }
-
   addItem() {
     if (this.addItemForm.valid) {
-      this.planItem = Object.assign({}, this.addItemForm.value);
-      this.planItem.productId = this.planItem.product.id;
-      this.planItems.push(this.planItem);
+      let planItem: PlanItem;
+      planItem = Object.assign({}, this.addItemForm.value);
+      this.annualPlan.planItems.push(planItem);
       this.createAddItemForm();
     }
   }
 
   deleteItem(planItem: PlanItem) {
-    this.planItems = this.planItems.filter((obj) => obj !== planItem);
+    this.planItemService.deletePlan(planItem.id).subscribe(() => {
+      this.annualPlan.planItems = this.annualPlan.planItems.filter((obj) => obj !== planItem);
+      this.alertify.success('Plan item deleted successfully');
+    });
   }
 
   editAnnualPlan() {
-    this.editedAnnualPlan = Object.assign({}, this.addForm.value);
-    this.editedAnnualPlan.dateOfIssue = this.annualPlan.dateOfIssue;
-    this.editedAnnualPlan.id = this.annualPlan.id;
+    let annualPlanForEdit: AnnualPlan;
+    annualPlanForEdit = Object.assign({}, this.addForm.value);
+    annualPlanForEdit.dateOfIssue = this.annualPlan.dateOfIssue;
+    annualPlanForEdit.id = this.annualPlan.id;
 
-    this.editedAnnualPlan.planItems = this.planItems;
-    this.annualPlanService.updatePlan(this.idToSend, this.editedAnnualPlan).subscribe(() => {
+    annualPlanForEdit.planItems = this.annualPlan.planItems;
+
+    this.annualPlanService.updatePlan(annualPlanForEdit.id, annualPlanForEdit).subscribe((annualPlan) => {
       this.alertify.success('Annual Plan Edited Successfully');
+      this.store.dispatch(editAnnualPlan({annualPlan}));
       this.router.navigate(['/annualPlan']);
     }, error => {
       this.alertify.error(error);
