@@ -1,0 +1,10 @@
+.table > tbody > tr > td {
+  vertical-align: middle;
+}
+.table > tbody > tr > th {
+  vertical-align: middle;
+}
+
+.table > thead > tr > th {
+  vertical-align: middle;
+}

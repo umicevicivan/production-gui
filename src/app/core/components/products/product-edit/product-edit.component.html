@@ -1,0 +1,175 @@
+<div class="container">
+  <form class="mt-4" [formGroup]="addForm" (ngSubmit)="editProduct()">
+    <h2 class="text-center">Edit Product: {{product.name}} / {{product.professionalName}}</h2>
+    <div class="row">
+      <div class="col-sm-3"></div>
+      <div class="col-sm-6">
+        <hr />
+        <div *ngIf="addForm.dirty" class="alert alert-info">
+          <strong> Information: </strong> You have made changes. Any unsaved changes will be lost!
+        </div>
+        <div class="form-group mt-3">
+          <h5>Name: (required)</h5>
+          <input
+            [ngClass]="{
+              'is-invalid':
+                addForm.get('name').errors && addForm.get('name').touched
+            }"
+            class="form-control"
+            formControlName="name"
+            placeholder="{{product.name}}"
+          />
+          <div class="invalid-feedback">Please choose a Name</div>
+        </div>
+
+        <div class="form-group">
+          <h5>Professional Name:</h5>
+          <input
+            [ngClass]="{
+              'is-invalid':
+                addForm.get('professionalName').errors &&
+                addForm.get('professionalName').touched
+            }"
+            class="form-control"
+            placeholder="{{product.professionalName}}"
+            formControlName="professionalName"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              addForm.get('professionalName').touched &&
+              addForm.get('professionalName').hasError('required')
+            "
+          >
+            Professional name is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <h5>Shape:</h5>
+          <input
+            [ngClass]="{
+              'is-invalid':
+                addForm.get('shape').errors && addForm.get('shape').touched
+            }"
+            class="form-control"
+            placeholder="{{product.shape}}"
+            formControlName="shape"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              addForm.get('shape').touched &&
+              addForm.get('shape').hasError('required')
+            "
+          >
+            Shape is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <h5>Description:</h5>
+          <input
+            [ngClass]="{
+              'is-invalid':
+                addForm.get('description').errors &&
+                addForm.get('description').touched
+            }"
+            class="form-control"
+            placeholder="{{product.description}}"
+            formControlName="description"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              addForm.get('description').touched &&
+              addForm.get('description').hasError('required')
+            "
+          >
+            Description is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <h5>Instruction:</h5>
+          <input
+            [ngClass]="{
+              'is-invalid':
+                addForm.get('instruction').errors &&
+                addForm.get('instruction').touched
+            }"
+            class="form-control"
+            placeholder="{{product.instruction}}"
+            formControlName="instruction"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              addForm.get('instruction').touched &&
+              addForm.get('instruction').hasError('required')
+            "
+          >
+            Instruction is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <h5>Price: (required)</h5>
+          <input
+            [ngClass]="{
+              'is-invalid':
+                addForm.get('price').errors &&
+                addForm.get('price').touched
+            }"
+            class="form-control"
+            placeholder="Price"
+            formControlName="price"
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              addForm.get('price').touched &&
+              addForm.get('price').hasError('required')
+            "
+          >
+            Price is required
+          </div>
+
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              addForm.get('price').touched &&
+              addForm.get('price').hasError('pattern')
+            "
+          >
+            Price must be a number and can't start with 0
+          </div>
+        </div>
+
+        <h5>Unit Of Measure: (required)</h5>
+        <select class="form-control" formControlName="unitOfMeasure">
+          <option value="" selected hidden disabled>Please chose Unit of Measure</option>
+          <option *ngFor="let unit of unitsOfMeasure$|async" [ngValue]="unit">{{
+            unit.fullName
+          }}</option>
+        </select>
+
+        <div class="mt-4 form-group text-center">
+          <button
+            class="btn btn-success"
+            [disabled]="!addForm.valid"
+            type="submit"
+          >
+            Edit
+          </button>
+          <button class="btn btn-default" type="button" (click)="cancel()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+<!--
+  <p>Form value: {{ addForm.value | json }}</p>
+  <p>Form status: {{ addForm.status | json }}</p> -->
+</div>
