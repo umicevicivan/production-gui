@@ -4,7 +4,6 @@ import { AuthService } from '../../auth/auth.service';
 import { AlertifyService } from '../../../shared/util/services/alertify.service';
 import { select, Store } from '@ngrx/store';
 import { isLoggedIn } from '../../../ngrx/selectors/auth.selector';
-import { toggleLogIn } from '../../../ngrx/actions/auth.actions';
 
 
 @Component({
@@ -24,11 +23,7 @@ export class NavComponent implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem('token');
-    const logIn = false;
-    this.store.dispatch(toggleLogIn({logIn}));
-    this.alertify.message('Logged out');
-    this.router.navigate(['/home']);
+    this.authService.logout();
   }
 
 }

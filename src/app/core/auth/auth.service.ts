@@ -61,4 +61,12 @@ export class AuthService {
     }
     return true;
   }
+
+  logout() {
+    localStorage.removeItem('token');
+    const logIn = false;
+    this.store.dispatch(toggleLogIn({logIn}));
+    this.alertify.message('Logged out');
+    this.router.navigate(['/home']);
+  }
 }
